@@ -1,4 +1,5 @@
 package com.mehrabi.mehrabi.controllers;
+
 import com.mehrabi.mehrabi.entities.TodoEntity;
 import com.mehrabi.mehrabi.services.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,14 @@ public class TodoController {
 
     @GetMapping
     public List<TodoEntity> getAllTodos(@RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size) {
         return todoService.getAllTodos(page, size);
     }
+
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteTodos(@RequestBody List<Long> ids) {
+        todoService.bulkDeleteTodos(ids);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

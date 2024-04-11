@@ -1,4 +1,5 @@
 package com.mehrabi.mehrabi.services;
+
 import com.mehrabi.mehrabi.entities.TodoEntity;
 import com.mehrabi.mehrabi.repository.TodoRepository;
 import org.slf4j.Logger;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +69,14 @@ public class TodoService {
             todoRepository.deleteById(id);
         } catch (Exception e) {
             logger.error("Error occurred while deleting todo with ID: {}", id, e);
+        }
+    }
+
+    public void bulkDeleteTodos(List<Long> ids) {
+        try {
+            todoRepository.deleteAllById(ids);
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting todos in bulk", e);
         }
     }
 }
