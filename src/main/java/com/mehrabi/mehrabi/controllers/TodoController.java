@@ -34,7 +34,7 @@ public class TodoController {
         return new ResponseEntity<>(addedTodo, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<TodoEntity> updateTodo(@PathVariable Long id, @RequestBody TodoEntity updatedTodo) {
         TodoEntity todo = todoService.updateTodo(id, updatedTodo);
         return todo != null
@@ -42,7 +42,7 @@ public class TodoController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
