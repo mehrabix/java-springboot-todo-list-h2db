@@ -28,7 +28,7 @@ public class TodoController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<TodoEntity> addTodo(@RequestBody TodoEntity todo) {
         TodoEntity addedTodo = todoService.addTodo(todo);
         return new ResponseEntity<>(addedTodo, HttpStatus.CREATED);
@@ -48,13 +48,13 @@ public class TodoController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public List<TodoEntity> getAllTodos(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return todoService.getAllTodos(page, size);
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/bulk-delete")
     public ResponseEntity<Void> deleteTodos(@RequestBody List<Long> ids) {
         todoService.bulkDeleteTodos(ids);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
