@@ -20,11 +20,6 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    @GetMapping
-    public List<TodoEntity> getAllTodos() {
-        return todoService.getAllTodos();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<TodoEntity> getTodoById(@PathVariable Long id) {
         Optional<TodoEntity> todo = todoService.getTodoById(id);
@@ -50,5 +45,11 @@ public class TodoController {
     public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public List<TodoEntity> getAllTodos(@RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        return todoService.getAllTodos(page, size);
     }
 }
