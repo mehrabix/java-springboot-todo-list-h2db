@@ -6,9 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +22,12 @@ public class TodoService {
         this.todoRepository = todoRepository;
     }
 
-    public List<TodoEntity> getAllTodos(int page, int size) {
+    public Page<TodoEntity> getAllTodos(Pageable pageable) {
         try {
-            Pageable pageable = PageRequest.of(page, size);
-            return todoRepository.findAll(pageable).getContent();
+            return todoRepository.findAll(pageable);
         } catch (Exception e) {
             logger.error("Error occurred while retrieving all todos", e);
-            return List.of();
+            throw new RuntimeException("Failed to retrieve todos", e);
         }
     }
 

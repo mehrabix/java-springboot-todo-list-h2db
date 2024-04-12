@@ -6,13 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/todos")
 public class TodoController {
+    private final Logger logger = LoggerFactory.getLogger(TodoService.class);
 
     private final TodoService todoService;
 
@@ -49,9 +57,31 @@ public class TodoController {
     }
 
     @GetMapping("/list")
-    public List<TodoEntity> getAllTodos(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return todoService.getAllTodos(page, size);
+    public ResponseEntity<Map<String, Object>> getAllTodos(
+            @RequestParam(defaultValue = "0") int skip,
+            @RequestParam(defaultValue = "10") int take,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        try {
+            int page = skip / pageSize;
+            Pageable pageable = PageRequest.of(page, pageSize);
+            Page<TodoEntity> todoPage = todoService.getAllTodos(pageable);
+
+            List<TodoEntity> todos = todoPage.getContent();
+            long totalItems = todoPage.getTotalElements();
+            int totalPages = todoPage.getTotalPages();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("items", todos);
+            response.put("take", take);
+            response.put("skip", skip);
+            response.put("totalPage", totalPages);
+            response.put("totalItems", totalItems);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error occurred while retrieving all todos", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/bulk-delete")
