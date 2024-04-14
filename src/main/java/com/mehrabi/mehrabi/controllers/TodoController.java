@@ -17,6 +17,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Sort;
+
+
 @RestController
 @RequestMapping("/todos")
 public class TodoController {
@@ -60,10 +63,12 @@ public class TodoController {
     public ResponseEntity<Map<String, Object>> getAllTodos(
             @RequestParam(defaultValue = "0") int skip,
             @RequestParam(defaultValue = "10") int take,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
         try {
             int page = skip / pageSize;
-            Pageable pageable = PageRequest.of(page, pageSize);
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
             Page<TodoEntity> todoPage = todoService.getAllTodos(pageable);
 
             List<TodoEntity> todos = todoPage.getContent();
